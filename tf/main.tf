@@ -17,7 +17,7 @@ provider "aws" {
 locals {
   vpc_cidr = "192.168.0.0/16"
   azs      = ["us-east-1a", "us-east-1b"]
-  org     = "kominskyorg"
+  org      = "kominskyorg"
   env      = "dev"
 
   subnet_bits = 8
