@@ -3,8 +3,8 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = "${local.org}-${local.env}-eks-cluster"
-  cluster_version = "1.28"
+  cluster_name    = "${var.org}-${var.env}-eks-cluster"
+  cluster_version = "1.30"
 
   # Subnets for control plane and worker nodes
   vpc_id                   = module.vpc.vpc_id
@@ -26,17 +26,17 @@ module "eks" {
   eks_managed_node_groups = {
     frontend = {
       instance_types = ["t4g.micro"]
-      desired_size   = 2
+      desired_size   = 1
       min_size       = 1
-      max_size       = 3
+      max_size       = 2
       subnet_ids     = module.vpc.public_subnets
       ami_type       = "AL2_ARM_64"
     }
     backend = {
       instance_types = ["t4g.micro"]
-      desired_size   = 2
+      desired_size   = 1
       min_size       = 1
-      max_size       = 3
+      max_size       = 2
       subnet_ids     = module.vpc.private_subnets
       ami_type       = "AL2_ARM_64"
     }
@@ -45,8 +45,8 @@ module "eks" {
   # Add the current user as cluster admin
   enable_cluster_creator_admin_permissions = true
 
-  tags = merge(local.tags, {
-    "Name" = "${local.org}-${local.env}-eks-cluster"
+  tags = merge(var.tags, {
+    "Name" = "${var.org}-${var.env}-eks-cluster"
   })
 }
 
@@ -55,7 +55,7 @@ module "eks_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
-  name        = "${local.org}-${local.env}-eks-sg"
+  name        = "${var.org}-${var.env}-eks-sg"
   description = "Security Group for EKS"
   vpc_id      = module.vpc.vpc_id
 
@@ -93,5 +93,5 @@ module "eks_sg" {
     }
   ]
 
-  tags = local.tags
+  tags = var.tags
 }

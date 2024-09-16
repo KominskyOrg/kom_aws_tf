@@ -33,23 +33,32 @@ locals {
 }
 
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.13.0"
-
-  name = "${local.org}-${local.env}-vpc"
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
+  source           = "./vpc"
   public_subnets   = local.public_subnets
   private_subnets  = local.private_subnets
   database_subnets = local.database_subnets
+  org              = local.org
+  env              = local.env
+  azs              = local.azs
+  vpc_cidr         = local.vpc_cidr
+}
 
-  enable_nat_gateway   = false
-  single_nat_gateway   = false
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+module "eks" {
+  source          = "./eks"
+  vpc_id          = module.vpc.vpc_id
+  public_subnets  = module.vpc.public_subnets
+  private_subnets = module.vpc.private_subnets
+  org             = local.org
+  env             = local.env
+  local_ip        = var.local_ip
+}
 
-  create_database_subnet_group = true
-
-  tags = local.tags
+module "rds" {
+  source           = "./rds"
+  vpc_id           = module.vpc.vpc_id
+  database_subnets = module.vpc.database_subnets
+  vpc_cidr_block   = local.vpc_cidr
+  env              = local.env
+  org              = local.org
+  local_ip         = var.local_ip
 }

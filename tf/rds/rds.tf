@@ -2,14 +2,14 @@ module "db_secret" {
   source  = "terraform-aws-modules/secrets-manager/aws"
   version = "1.1.2"
 
-  name_prefix                      = "${local.org}-${local.env}-db-password"
+  name_prefix                      = "${var.org}-${var.env}-db-password"
   description                      = "Secret for RDS database password"
   recovery_window_in_days          = 30
   create_random_password           = true
   random_password_length           = 16
   random_password_override_special = "!@#$%^&*()_+"
 
-  tags = local.tags
+  tags = var.tags
 }
 
 data "aws_secretsmanager_secret" "db_secret" {
@@ -24,7 +24,7 @@ module "rds" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.9.0"
 
-  identifier             = "${local.org}-${local.env}-db"
+  identifier             = "${var.org}-${var.env}-db"
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t4g.micro"
@@ -47,13 +47,13 @@ module "rds" {
   performance_insights_retention_period = 7
 
   skip_final_snapshot              = false
-  final_snapshot_identifier_prefix = "${local.org}-${local.env}-db"
+  final_snapshot_identifier_prefix = "${var.org}-${var.env}-db"
 
   create_db_subnet_group = true
   major_engine_version   = "8.0"
   family                 = "mysql8.0"
 
-  tags = merge(local.tags, {
+  tags = merge(var.tags, {
     "Sensitive" = "high"
   })
 }
@@ -64,7 +64,7 @@ module "rds_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
-  name        = "${local.org}-rds"
+  name        = "${var.org}-rds"
   description = "Allow MySQL traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -80,7 +80,7 @@ module "rds_sg" {
       from_port   = 3306
       to_port     = 3306
       protocol    = "tcp"
-      description = "Allow MySQL access from local machine"
+      description = "Allow MySQL access from var machine"
       cidr_blocks = var.local_ip
     },
   ]
@@ -90,11 +90,11 @@ module "rds_sg" {
       from_port   = 3306
       to_port     = 3306
       protocol    = "tcp"
-      description = "Allow outbound MySQL traffic to local machine"
+      description = "Allow outbound MySQL traffic to var machine"
       cidr_blocks = var.local_ip
     },
   ]
 
-  tags = local.tags
+  tags = var.tags
 }
 
