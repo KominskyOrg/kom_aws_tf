@@ -1,5 +1,19 @@
 terraform {
   required_version = ">= 1.5.0"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.11.0"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.0.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.0.0"
+    }
+  }
 
   backend "s3" {
     bucket         = "tf-statelock"
@@ -18,7 +32,7 @@ locals {
   vpc_cidr = "192.168.0.0/16"
   azs      = ["us-east-1a", "us-east-1b"]
   org      = "kominskyorg"
-  env      = "dev"
+  env      = "staging"
 
   subnet_bits = 8
 
@@ -53,12 +67,12 @@ module "eks" {
   local_ip        = var.local_ip
 }
 
-module "rds" {
-  source           = "./rds"
-  vpc_id           = module.vpc.vpc_id
-  database_subnets = module.vpc.database_subnets
-  vpc_cidr_block   = local.vpc_cidr
-  env              = local.env
-  org              = local.org
-  local_ip         = var.local_ip
-}
+# module "rds" {
+#   source           = "./rds"
+#   vpc_id           = module.vpc.vpc_id
+#   database_subnets = module.vpc.database_subnets
+#   vpc_cidr_block   = module.vpc.vpc_cidr_block
+#   env              = local.env
+#   org              = local.org
+#   local_ip         = var.local_ip
+# }

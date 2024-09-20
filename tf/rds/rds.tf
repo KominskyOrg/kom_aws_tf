@@ -35,7 +35,7 @@ module "rds" {
   username               = "admin"
   password               = data.aws_secretsmanager_secret_version.db_secret.secret_string
   vpc_security_group_ids = [module.rds_sg.security_group_id]
-  subnet_ids             = module.vpc.database_subnets
+  subnet_ids             = var.database_subnets
   publicly_accessible    = true
 
   multi_az                              = false
@@ -58,15 +58,13 @@ module "rds" {
   })
 }
 
-variable "local_ip" {}
-
 module "rds_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
   name        = "${var.org}-rds"
   description = "Allow MySQL traffic"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress_with_cidr_blocks = [
     {
@@ -74,7 +72,7 @@ module "rds_sg" {
       to_port     = 3306
       protocol    = "tcp"
       description = "Allow MySQL access from within the VPC"
-      cidr_blocks = module.vpc.vpc_cidr_block
+      cidr_blocks = var.vpc_cidr_block
     },
     {
       from_port   = 3306

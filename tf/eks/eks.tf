@@ -7,9 +7,9 @@ module "eks" {
   cluster_version = "1.30"
 
   # Subnets for control plane and worker nodes
-  vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = concat(module.vpc.public_subnets, module.vpc.private_subnets)
-  control_plane_subnet_ids = module.vpc.private_subnets
+  vpc_id                   = var.vpc_id
+  subnet_ids               = concat(var.public_subnets, var.private_subnets)
+  control_plane_subnet_ids = var.private_subnets
 
   # Cluster endpoint access configuration
   cluster_endpoint_public_access  = true
@@ -25,19 +25,19 @@ module "eks" {
   # Managed Node Groups
   eks_managed_node_groups = {
     frontend = {
-      instance_types = ["t4g.micro"]
+      instance_types = ["m6g.large"]
       desired_size   = 1
       min_size       = 1
       max_size       = 2
-      subnet_ids     = module.vpc.public_subnets
+      subnet_ids     = var.public_subnets
       ami_type       = "AL2_ARM_64"
     }
     backend = {
-      instance_types = ["t4g.micro"]
+      instance_types = ["m6g.large"]
       desired_size   = 1
       min_size       = 1
       max_size       = 2
-      subnet_ids     = module.vpc.private_subnets
+      subnet_ids     = var.private_subnets
       ami_type       = "AL2_ARM_64"
     }
   }
@@ -57,7 +57,7 @@ module "eks_sg" {
 
   name        = "${var.org}-${var.env}-eks-sg"
   description = "Security Group for EKS"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress_with_cidr_blocks = [
     {
