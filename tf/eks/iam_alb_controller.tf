@@ -7,18 +7,23 @@ resource "aws_iam_policy" "alb_controller_policy" {
 
 data "aws_iam_policy_document" "alb_controller" {
   statement {
+    actions   = ["acm:DescribeCertificate", "acm:ListCertificates", "acm:GetCertificate"]
+    resources = ["*"]
+  }
+
+  statement {
+    actions   = ["ec2:AuthorizeSecurityGroupIngress", "ec2:RevokeSecurityGroupIngress"]
+    resources = ["*"]
+  }
+
+  statement {
     actions = [
-      "acm:DescribeCertificate",
-      "acm:ListCertificates",
-      "acm:GetCertificate",
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:RevokeSecurityGroupIngress",
-      "ec2:Describe*",
       "elasticloadbalancing:*",
+      "ec2:*",
       "iam:CreateServiceLinkedRole",
+      "cognito-idp:DescribeUserPoolClient",
       "waf-regional:*",
-      "wafv2:*",
-      "tag:GetTags",
+      "tag:GetResources",
       "tag:TagResources"
     ]
     resources = ["*"]

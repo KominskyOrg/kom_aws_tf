@@ -31,6 +31,9 @@ module "eks" {
       max_size       = 2
       subnet_ids     = var.public_subnets
       ami_type       = "AL2_ARM_64"
+      labels = {
+        role = "frontend"
+      }
     }
     backend = {
       instance_types = ["m6g.large"]
@@ -39,6 +42,9 @@ module "eks" {
       max_size       = 2
       subnet_ids     = var.private_subnets
       ami_type       = "AL2_ARM_64"
+      labels = {
+        role = "backend"
+      }
     }
   }
 
@@ -48,50 +54,4 @@ module "eks" {
   tags = merge(var.tags, {
     "Name" = "${var.org}-${var.env}-eks-cluster"
   })
-}
-
-# Security Group for EKS Nodes
-module "eks_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
-
-  name        = "${var.org}-${var.env}-eks-sg"
-  description = "Security Group for EKS"
-  vpc_id      = var.vpc_id
-
-  ingress_with_cidr_blocks = [
-    {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      description = "Allow HTTPS traffic to the Kubernetes API"
-      cidr_blocks = var.local_ip
-    },
-    {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      description = "Allow HTTPS traffic to the frontend"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      description = "Allow HTTP traffic to the frontend"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-
-  egress_with_cidr_blocks = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      description = "Allow all outbound traffic"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-
-  tags = var.tags
 }

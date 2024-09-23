@@ -31,7 +31,7 @@ module "rds" {
   allocated_storage      = 20
   max_allocated_storage  = 50
   storage_type           = "gp2"
-  db_name                = "kom_dev_db"
+  db_name                = "${var.org}_${var.env}_db"
   username               = "admin"
   password               = data.aws_secretsmanager_secret_version.db_secret.secret_string
   vpc_security_group_ids = [module.rds_sg.security_group_id]
