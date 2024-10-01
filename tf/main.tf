@@ -31,7 +31,7 @@ provider "aws" {
 locals {
   vpc_cidr = "192.168.0.0/16"
   azs      = ["us-east-1a", "us-east-1b"]
-  org      = "kominskyorg"
+  org      = "kom"
   env      = "staging"
 
   subnet_bits = 8
@@ -65,14 +65,15 @@ module "eks" {
   org             = local.org
   env             = local.env
   local_ip        = var.local_ip
+  certificate_arn = aws_acm_certificate_validation.wildcard_cert_validation.certificate_arn
 }
 
-# module "rds" {
-#   source           = "./rds"
-#   vpc_id           = module.vpc.vpc_id
-#   database_subnets = module.vpc.database_subnets
-#   vpc_cidr_block   = module.vpc.vpc_cidr_block
-#   env              = local.env
-#   org              = local.org
-#   local_ip         = var.local_ip
-# }
+module "rds" {
+  source           = "./rds"
+  vpc_id           = module.vpc.vpc_id
+  database_subnets = module.vpc.database_subnets
+  vpc_cidr_block   = module.vpc.vpc_cidr_block
+  env              = local.env
+  org              = local.org
+  local_ip         = var.local_ip
+}

@@ -4,7 +4,7 @@ variable "org" {
 }
 
 variable "env" {
-  description = "Environment name (e.g., dev, prod)"
+  description = "Environment name (e.g., staging, prod)"
   type        = string
 }
 
@@ -32,4 +32,9 @@ variable "public_subnets" {
 variable "private_subnets" {
   description = "List of private subnet IDs"
   type        = list(string)
+}
+
+variable "certificate_arn" {
+  description = "ARN of the certificate to use for the ingress"
+  type        = string
 }

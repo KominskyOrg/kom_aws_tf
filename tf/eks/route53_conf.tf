@@ -1,29 +1,20 @@
-resource "aws_route53_zone" "primary" {
+data "aws_route53_zone" "primary" {
   name = "jaredkominsky.com"
 }
 
-resource "aws_route53_record" "alb_record_dev" {
-  zone_id = aws_route53_zone.primary.zone_id
+resource "aws_route53_record" "env_alb_record" {
+  zone_id = data.aws_route53_zone.primary.zone_id
   name    = "${var.env}.jaredkominsky.com"
   type    = "A"
 
   alias {
-    name                   = aws_lb.app_alb.dns_name
-    zone_id                = aws_lb.app_alb.zone_id
+    name                   = kubernetes_ingress_v1.app_ingress.status.0.load_balancer.0.ingress.0.hostname
+    zone_id                = "Z35SXDOTRQ7X7K"
     evaluate_target_health = true
   }
-}
 
-resource "aws_lb" "app_alb" {
-  name               = "app-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [module.eks.cluster_security_group_id]
-  subnets            = var.public_subnets
-
-  enable_deletion_protection = false
-
-  tags = merge(var.tags, {
-    "Name" = "app-alb"
-  })
+  depends_on = [
+    helm_release.aws_load_balancer_controller,
+    kubernetes_ingress_v1.app_ingress
+  ]
 }
