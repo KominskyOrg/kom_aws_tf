@@ -13,7 +13,12 @@ output "eks_cluster_ca_cert" {
   value       = module.eks.eks_cluster_ca_cert
 }
 
-# output "db_secret_name" {
-#   description = "The name of the secret for the RDS database"
-#   value       = module.rds.db_secret_name
-# }
+output "db_host" {
+  description = "The host of the RDS database"
+  value       = module.rds.db_host
+}
+
+output "db_port" {
+  description = "The port of the RDS database"
+  value       = module.rds.db_port
+}

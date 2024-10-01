@@ -1,25 +1,3 @@
-module "db_secret" {
-  source  = "terraform-aws-modules/secrets-manager/aws"
-  version = "1.1.2"
-
-  name_prefix                      = "${var.org}-${var.env}-db-password"
-  description                      = "Secret for RDS database password"
-  recovery_window_in_days          = 30
-  create_random_password           = true
-  random_password_length           = 16
-  random_password_override_special = "!@#$%^&*()_+"
-
-  tags = var.tags
-}
-
-data "aws_secretsmanager_secret" "db_secret" {
-  name = module.db_secret.secret_arn
-}
-
-data "aws_secretsmanager_secret_version" "db_secret" {
-  secret_id = data.aws_secretsmanager_secret.db_secret.id
-}
-
 module "rds" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.9.0"
@@ -28,15 +6,13 @@ module "rds" {
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t4g.micro"
-  allocated_storage      = 20
+  allocated_storage      = 20              
   max_allocated_storage  = 50
   storage_type           = "gp2"
-  db_name                = "${var.org}_${var.env}_db"
   username               = "admin"
-  password               = data.aws_secretsmanager_secret_version.db_secret.secret_string
   vpc_security_group_ids = [module.rds_sg.security_group_id]
   subnet_ids             = var.database_subnets
-  publicly_accessible    = true
+  publicly_accessible    = false
 
   multi_az                              = false
   backup_retention_period               = 1
@@ -85,11 +61,11 @@ module "rds_sg" {
 
   egress_with_cidr_blocks = [
     {
-      from_port   = 3306
-      to_port     = 3306
-      protocol    = "tcp"
-      description = "Allow outbound MySQL traffic to var machine"
-      cidr_blocks = var.local_ip
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "Allow all outbound traffic"
+      cidr_blocks = "0.0.0.0/0"
     },
   ]
 

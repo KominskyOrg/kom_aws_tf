@@ -24,7 +24,7 @@ variable "api_routes" {
   default = [
     {
       service     = "auth-api"
-      port        = 80
+      port        = 8080
       path_prefix = "/api/auth"
     },
   ]
@@ -40,7 +40,7 @@ variable "service_routes" {
   default = [
     {
       service     = "auth-service"
-      port        = 80
+      port        = 8080
       path_prefix = "/service/auth"
     },
   ]

@@ -30,8 +30,8 @@ locals {
   )
 
   all_ingress_paths = concat(
-    # local.api_ingress_paths,
-    # local.service_ingress_paths,
+    local.api_ingress_paths, 
+    local.service_ingress_paths,
     local.frontend_ingress_paths
   )
 }
@@ -59,6 +59,7 @@ resource "kubernetes_ingress_v1" "app_ingress" {
     namespace = kubernetes_namespace.environment.metadata[0].name
 
     annotations = {
+      "alb.ingress.kubernetes.io/target-type"      = "ip"
       "kubernetes.io/ingress.class"                = "alb"
       "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
       "alb.ingress.kubernetes.io/healthcheck-path" = "/health"

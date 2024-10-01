@@ -25,10 +25,10 @@ module "eks" {
   # Managed Node Groups
   eks_managed_node_groups = {
     frontend = {
-      instance_types = ["m6g.large"]
+      instance_types = ["t4g.micro"]
       desired_size   = 1
       min_size       = 1
-      max_size       = 2
+      max_size       = 4
       subnet_ids     = var.public_subnets
       ami_type       = "AL2_ARM_64"
       labels = {
@@ -36,10 +36,10 @@ module "eks" {
       }
     }
     backend = {
-      instance_types = ["m6g.large"]
+      instance_types = ["t4g.micro"]
       desired_size   = 1
       min_size       = 1
-      max_size       = 2
+      max_size       = 4
       subnet_ids     = var.private_subnets
       ami_type       = "AL2_ARM_64"
       labels = {
