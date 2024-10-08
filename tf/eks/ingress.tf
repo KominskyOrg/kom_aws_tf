@@ -9,16 +9,6 @@ locals {
     ]
   )
 
-  service_ingress_paths = flatten([
-    for svc in var.service_routes : {
-      path         = "${svc.path_prefix}"
-      pathType     = "Prefix"
-      service_name = svc.service
-      service_port = svc.port
-    }
-    ]
-  )
-
   frontend_ingress_paths = flatten([
     for frontend in var.frontend_apps : {
       path         = "${frontend.path_prefix}"
@@ -31,7 +21,6 @@ locals {
 
   all_ingress_paths = concat(
     local.api_ingress_paths, 
-    local.service_ingress_paths,
     local.frontend_ingress_paths
   )
 }

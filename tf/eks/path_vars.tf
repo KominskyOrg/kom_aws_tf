@@ -30,18 +30,3 @@ variable "api_routes" {
   ]
 }
 
-variable "service_routes" {
-  description = "List of service routes with their target services"
-  type = list(object({
-    service     = string
-    port        = number
-    path_prefix = string
-  }))
-  default = [
-    {
-      service     = "auth-service"
-      port        = 8080
-      path_prefix = "/service/auth"
-    },
-  ]
-}
