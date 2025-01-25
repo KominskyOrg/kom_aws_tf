@@ -1,9 +1,9 @@
 variable "frontend_apps" {
   description = "List of frontend applications"
   type = list(object({
-    service         = string
-    port         = number
-    path_prefix  = string
+    service     = string
+    port        = number
+    path_prefix = string
   }))
   default = [
     {
@@ -29,4 +29,3 @@ variable "api_routes" {
     },
   ]
 }
-

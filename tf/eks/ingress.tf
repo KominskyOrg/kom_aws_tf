@@ -20,7 +20,7 @@ locals {
   )
 
   all_ingress_paths = concat(
-    local.api_ingress_paths, 
+    local.api_ingress_paths,
     local.frontend_ingress_paths
   )
 }
@@ -56,7 +56,7 @@ resource "kubernetes_ingress_v1" "app_ingress" {
         { HTTP = 80 },
         { HTTPS = 443 }
       ])
-      "alb.ingress.kubernetes.io/certificate-arn"  = var.certificate_arn
+      "alb.ingress.kubernetes.io/certificate-arn"  = data.terraform_remote_state.main_infra.outputs.acm_cert_arn
       "alb.ingress.kubernetes.io/backend-protocol" = "HTTP"
 
       # Redirect HTTP to HTTPS

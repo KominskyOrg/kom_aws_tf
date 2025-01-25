@@ -1,10 +1,10 @@
 resource "helm_release" "aws_load_balancer_controller" {
-  name              = "aws-load-balancer-controller"
-  repository        = "https://aws.github.io/eks-charts"
-  chart             = "aws-load-balancer-controller"
-  namespace         = "kube-system"
-  version           = "1.8.2"
-  create_namespace  = false
+  name             = "aws-load-balancer-controller"
+  repository       = "https://aws.github.io/eks-charts"
+  chart            = "aws-load-balancer-controller"
+  namespace        = "kube-system"
+  version          = "1.8.2"
+  create_namespace = false
 
   set {
     name  = "clusterName"
@@ -28,7 +28,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "vpcId"
-    value = var.vpc_id
+    value = data.terraform_remote_state.vpc.outputs.vpc_id
   }
 
   depends_on = [

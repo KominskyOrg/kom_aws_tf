@@ -66,29 +66,29 @@ resource "aws_iam_role_policy_attachment" "lambda_attach_policy" {
 }
 
 data "aws_secretsmanager_secret_version" "rds_master_password" {
-  secret_id = module.rds.db_secret_arn
+  secret_id = module.rds.db_instance_master_user_secret_arn
 }
 
 resource "aws_lambda_function" "manage_db_resources" {
-  filename         = "../lambda_functions/manage_db_resources_v1.5.zip"
-  function_name    = "manage_db_resources"
-  role             = aws_iam_role.lambda_exec_role.arn
-  handler          = "manage_db_resources.lambda_handler"
-  runtime          = "python3.12"
-  timeout          = 60
-  memory_size      = 256
+  filename      = "./lambda_functions/manage_db_resources_v1.5.zip"
+  function_name = "manage_db_resources"
+  role          = aws_iam_role.lambda_exec_role.arn
+  handler       = "manage_db_resources.lambda_handler"
+  runtime       = "python3.12"
+  timeout       = 60
+  memory_size   = 256
 
   environment {
     variables = {
-      RDS_HOST        = module.rds.db_host
-      RDS_PORT        = module.rds.db_port
+      RDS_HOST        = module.rds.db_instance_address
+      RDS_PORT        = module.rds.db_instance_port
       MASTER_USERNAME = jsondecode(data.aws_secretsmanager_secret_version.rds_master_password.secret_string)["username"]
       MASTER_PASSWORD = jsondecode(data.aws_secretsmanager_secret_version.rds_master_password.secret_string)["password"]
     }
   }
 
   vpc_config {
-    subnet_ids         = module.vpc.private_subnets
+    subnet_ids         = data.terraform_remote_state.vpc.outputs.private_subnets
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
@@ -98,7 +98,7 @@ resource "aws_lambda_function" "manage_db_resources" {
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda_sg"
   description = "Security group for Lambda to access RDS"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
   egress {
     from_port   = 0
@@ -114,7 +114,7 @@ resource "aws_security_group_rule" "allow_lambda_to_rds" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  security_group_id        = module.rds.db_security_group_id
+  security_group_id        = module.rds_sg.security_group_id
   source_security_group_id = aws_security_group.lambda_sg.id
 }
 

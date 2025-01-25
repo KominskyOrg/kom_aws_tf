@@ -1,5 +1,18 @@
-# Directory where Terraform configurations are located
-TF_DIR = tf
+# Ensure TF_PROJ is set to one of the allowed options
+ifeq ($(origin TF_PROJ), undefined)
+    $(error TF_PROJ is not set. Please specify it as a variable when running make. Options are: eks, rds, vpc, or main. Example: make TF_PROJ=eks apply)
+endif
+
+ifneq ($(filter $(TF_PROJ),eks rds vpc main),)
+    # Directory where Terraform configurations are located
+    ifeq ($(TF_PROJ),main)
+        TF_DIR = tf
+    else
+        TF_DIR = tf/$(TF_PROJ)
+    endif
+else
+    $(error Invalid TF_PROJ value "$(TF_PROJ)". Allowed options are: eks, rds, vpc, or main. Example: make TF_PROJ=eks apply)
+endif
 
 # Default goal
 .DEFAULT_GOAL := help
