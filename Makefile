@@ -36,6 +36,9 @@ apply: ## Apply Terraform changes
 destroy: ## Destroy Terraform-managed infrastructure
 	terraform -chdir=$(TF_DIR) destroy -var-file=secrets.tfvars
 
+list: ## List Terraform resources
+	terraform -chdir=$(TF_DIR) state list
+
 clean: ## Remove all generated files
 	rm -f $(TF_PLAN_FILE)
 

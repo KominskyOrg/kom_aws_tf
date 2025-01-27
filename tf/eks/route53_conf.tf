@@ -8,13 +8,12 @@ resource "aws_route53_record" "alb_dns_record" {
   type    = "A"
 
   alias {
-    name                   = module.alb.dns_name
-    zone_id                = module.alb.zone_id
+    name                   = kubernetes_ingress_v1.app_ingress.status.0.load_balancer.0.ingress.0.hostname
+    zone_id                = "Z35SXDOTRQ7X7K"
     evaluate_target_health = true
   }
 
   depends_on = [
-    module.alb,
     kubernetes_ingress_v1.app_ingress
   ]
 }
