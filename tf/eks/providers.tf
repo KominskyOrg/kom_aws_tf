@@ -14,13 +14,7 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "tf-statelock"
-    key            = "kom_aws_tf/eks/terraform_state.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tf-state-table"
-    encrypt        = true
-  }
+  backend "s3" {}
 }
 
 provider "aws" {
@@ -44,9 +38,9 @@ provider "helm" {
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
-    bucket = "tf-statelock"
-    key    = "kom_aws_tf/vpc/terraform_state.tfstate"
-    region = "us-east-1"
+    bucket = "${var.org}-${var.infra_env}-tf-state"
+    key    = "kom_aws_tf/vpc/${var.infra_env}/terraform_state.tfstate"
+    region = var.region
   }
 }
 
@@ -54,14 +48,14 @@ data "terraform_remote_state" "main_infra" {
   backend = "s3"
   config = {
     bucket = "tf-statelock"
-    key    = "kom_aws_tf.tfstate"
-    region = "us-east-1"
+    key    = "kom_aws_tf/terraform_state.tfstate"
+    region = var.region
   }
 }
 
 resource "kubernetes_namespace" "environment" {
   metadata {
-    name = var.env
+    name = var.infra_env
   }
 }
 

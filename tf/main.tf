@@ -15,13 +15,7 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "tf-statelock"
-    key            = "kom_aws_tf.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tf-state-table"
-    encrypt        = true
-  }
+  backend "s3" {}
 }
 
 provider "aws" {
@@ -29,11 +23,9 @@ provider "aws" {
 }
 
 locals {
-  org = "kom"
-  env = "staging"
+  org = var.org
 
   tags = {
-    Environment = local.env
-    ManagedBy   = "Terraform"
+    ManagedBy = "Terraform"
   }
 }

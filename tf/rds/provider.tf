@@ -7,20 +7,14 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "tf-statelock"
-    key            = "kom_aws_tf/rds/terraform_state.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tf-state-table"
-    encrypt        = true
-  }
+  backend "s3" {}
 }
 
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
-    bucket = "tf-statelock"
-    key    = "kom_aws_tf/vpc/terraform_state.tfstate"
-    region = "us-east-1"
+    bucket = "${var.org}-${var.infra_env}-tf-state"
+    key    = "kom_aws_tf/vpc/${var.infra_env}/terraform_state.tfstate"
+    region = var.region
   }
 }

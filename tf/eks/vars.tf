@@ -1,7 +1,6 @@
-variable "env" {
+variable "infra_env" {
   description = "Environment name (e.g., staging, prod)"
   type        = string
-  default     = "staging"
 }
 
 variable "local_ip" {

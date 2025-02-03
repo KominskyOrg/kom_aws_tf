@@ -1,9 +1,8 @@
 locals {
-  org = "kom"
-  env = var.env
-
+  org       = "kom"
+  infra_env = var.infra_env
   tags = {
-    Environment = local.env
+    Environment = local.infra_env
     ManagedBy   = "Terraform"
   }
 }

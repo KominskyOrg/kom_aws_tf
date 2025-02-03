@@ -3,8 +3,17 @@ variable "local_ip" {
   type        = string
 }
 
-variable "env" {
+variable "infra_env" {
   description = "Environment to deploy to"
   type        = string
-  default     = "staging"
+}
+
+variable "org" {
+  description = "Organization to deploy to"
+  type        = string
+}
+
+variable "region" {
+  description = "Region to deploy to"
+  type        = string
 }

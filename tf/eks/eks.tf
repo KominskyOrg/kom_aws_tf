@@ -2,7 +2,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name    = "${local.org}-${local.env}-eks-cluster"
+  cluster_name    = "${local.org}-${local.infra_env}-eks-cluster"
   cluster_version = "1.30"
 
   vpc_id                   = data.terraform_remote_state.vpc.outputs.vpc_id
@@ -49,6 +49,6 @@ module "eks" {
   cluster_enabled_log_types                = []
 
   tags = merge(local.tags, {
-    "Name" = "${local.org}-${local.env}-eks-cluster"
+    "Name" = "${local.org}-${local.infra_env}-eks-cluster"
   })
 }

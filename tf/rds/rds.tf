@@ -2,7 +2,7 @@ module "rds" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.9.0"
 
-  identifier             = "${local.org}-${local.env}-db"
+  identifier             = "${local.org}-${local.infra_env}-db"
   engine                 = "mysql"
   engine_version         = "8.0"
   instance_class         = "db.t4g.micro"
@@ -23,7 +23,7 @@ module "rds" {
   performance_insights_retention_period = 7
 
   skip_final_snapshot              = true
-  final_snapshot_identifier_prefix = "${local.org}-${local.env}-db"
+  final_snapshot_identifier_prefix = "${local.org}-${local.infra_env}-db"
 
   create_db_subnet_group = true
   major_engine_version   = "8.0"

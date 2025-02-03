@@ -1,0 +1,50 @@
+name: GitOps Terraform
+
+on:
+  pull_request:
+    branches: [staging, main]
+  push:
+    branches: [staging, main]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tf_proj: [eks, rds, vpc, main]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Init & Plan (staging)
+        if: >
+          ${{ github.event_name == 'pull_request' &&
+          github.base_ref == 'staging' }}
+        run: |
+          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+          make plan TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+
+      - name: Init & Apply (staging)
+        if: >
+          ${{ github.event_name == 'push' &&
+          github.ref == 'refs/heads/staging' }}
+        run: |
+          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+          make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+
+      - name: Init & Plan (prod)
+        if: >
+          ${{ github.event_name == 'pull_request' &&
+          github.base_ref == 'main' }}
+        run: |
+          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
+          make plan TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
+
+      - name: Init & Apply (prod)
+        if: >
+          ${{ github.event_name == 'push' &&
+          github.ref == 'refs/heads/main' }}
+        run: |
+          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
+          make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod

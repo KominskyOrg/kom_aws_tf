@@ -44,7 +44,7 @@ resource "kubernetes_service" "ssl_redirect" {
 
 resource "kubernetes_ingress_v1" "app_ingress" {
   metadata {
-    name      = "${var.env}-ingress"
+    name      = "${var.infra_env}-ingress"
     namespace = kubernetes_namespace.environment.metadata[0].name
 
     annotations = {
@@ -97,7 +97,7 @@ resource "kubernetes_ingress_v1" "app_ingress" {
 
     # Host-Specific Rule: Route Traffic to auth-app
     rule {
-      host = "${var.env}.jaredkominsky.com"
+      host = "${var.infra_env}.jaredkominsky.com"
 
       http {
         dynamic "path" {
