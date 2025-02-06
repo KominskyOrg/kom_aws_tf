@@ -48,7 +48,7 @@ jobs:
       #     make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
 
       - name: Init & Plan (prod)
-        # if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
+        if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
         run: |
           make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
           make plan TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
