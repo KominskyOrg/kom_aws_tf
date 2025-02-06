@@ -39,7 +39,6 @@ else
   $(error Invalid TF_PROJ value "$(TF_PROJ)". Valid options: $(VALID_TF_PROJS))
 endif
 
-TF_VARS           := -var-file="secrets.tfvars"
 DEFAULT_TF_VARS   := -var="infra_env=$(INFRA_ENV)" -var="org=$(ORG)" -var="region=$(REGION)"
 BACKEND_TF_VARS   := \
   --backend-config="bucket=$(TF_STATE_BUCKET)" \
