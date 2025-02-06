@@ -39,7 +39,7 @@ data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
     bucket = "${var.org}-${var.infra_env}-tf-state"
-    key    = "kom_aws_tf/vpc/${var.infra_env}/terraform_state.tfstate"
+    key    = "kom_aws_tf/vpc/terraform_state.tfstate"
     region = var.region
   }
 }
@@ -48,7 +48,7 @@ data "terraform_remote_state" "main_infra" {
   backend = "s3"
   config = {
     bucket = "tf-statelock"
-    key    = "kom_aws_tf/terraform_state.tfstate"
+    key    = "kom_aws_tf/main/terraform_state.tfstate"
     region = var.region
   }
 }
