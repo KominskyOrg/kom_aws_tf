@@ -6,6 +6,9 @@ on:
   push:
     branches: [staging, main]
 
+env:
+  TF_VAR_local_ip: ${{ github.actor_ip }}
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -37,13 +40,13 @@ jobs:
           make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
           make plan TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
 
-      - name: Init & Apply (staging)
-        if: >
-          ${{ github.event_name == 'push' &&
-          github.ref == 'refs/heads/staging' }}
-        run: |
-          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
-          make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+      # - name: Init & Apply (staging)
+      #   if: >
+      #     ${{ github.event_name == 'push' &&
+      #     github.ref == 'refs/heads/staging' }}
+      #   run: |
+      #     make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
+      #     make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=staging
 
       - name: Init & Plan (prod)
         if: >
@@ -53,10 +56,10 @@ jobs:
           make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
           make plan TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
 
-      - name: Init & Apply (prod)
-        if: >
-          ${{ github.event_name == 'push' &&
-          github.ref == 'refs/heads/main' }}
-        run: |
-          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
-          make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
+      # - name: Init & Apply (prod)
+      #   if: >
+      #     ${{ github.event_name == 'push' &&
+      #     github.ref == 'refs/heads/main' }}
+      #   run: |
+      #     make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
+      #     make apply TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=prod
