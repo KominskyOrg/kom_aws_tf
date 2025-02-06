@@ -29,9 +29,8 @@ ifneq ($(filter $(TF_PROJ),$(VALID_TF_PROJS)),)
 	TF_STATE_REGION         ?= $(REGION)
 	TF_STATE_DYNAMODB_TABLE ?= tf-state-lock-$(INFRA_ENV)
   endif
-  TF_STATE_REGION   ?= $(REGION)
 else
-  $(error Invalid TF_PROJ value "$(TF_PROJ)". Valid options: eks, rds, vpc, main)
+  $(error Invalid TF_PROJ value "$(TF_PROJ)". Valid options: $(VALID_TF_PROJS))
 endif
 
 TF_VARS           := -var-file="secrets.tfvars"
@@ -39,7 +38,7 @@ DEFAULT_TF_VARS   := -var="infra_env=$(INFRA_ENV)" -var="org=$(ORG)" -var="regio
 BACKEND_TF_VARS   := \
   --backend-config="bucket=$(TF_STATE_BUCKET)" \
   --backend-config="key=$(TF_STATE_KEY)" \
-  --backend-config="region=$(TF_STATE_REGION)" \
+  --backend-config="region=$(REGION)" \
   --backend-config="dynamodb_table=$(TF_STATE_DYNAMODB_TABLE)" \
   --backend-config="encrypt=true"
 

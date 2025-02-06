@@ -1,0 +1,31 @@
+name: Destroy All Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Which environment to destroy? e.g., dev, staging, prod"
+        required: true
+        default: "staging"
+
+jobs:
+  destroy-resources:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Adjust to match valid TF_PROJ values in your Makefile
+        tf_proj: [eks, rds, vpc, main]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ">=1.5.0"
+
+      - name: Initialize and Destroy
+        run: |
+          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=${{ github.event.inputs.environment }}
+          make destroy TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=${{ github.event.inputs.environment }}
