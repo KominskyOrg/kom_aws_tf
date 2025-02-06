@@ -23,12 +23,6 @@ ifneq ($(filter $(TF_PROJ),$(VALID_TF_PROJS)),)
 	TF_STATE_REGION         ?= $(REGION)
 	TF_STATE_DYNAMODB_TABLE ?= tf-state-table
   else
-	ifeq ($(TF_PROJ),eks)
-	  TF_VARS := \
-		-var="infra_env=$(INFRA_ENV)"
-	else
-	  TF_VARS := $(DEFAULT_TF_VARS)
-	endif
 	TF_DIR                  := tf/$(TF_PROJ)
 	TF_STATE_KEY            := $(REPO_NAME)/$(TF_PROJ)/$(INFRA_ENV)/terraform_state.tfstate
 	TF_STATE_BUCKET         ?= $(ORG)-$(INFRA_ENV)-tf-state
@@ -48,7 +42,7 @@ BACKEND_TF_VARS   := \
   --backend-config="encrypt=true"
 
 # Combine commonly used Terraform arguments into a single variable
-TF_COMMON_ARGS    := $(TF_VARS) $(ARGS)
+TF_COMMON_ARGS    := $(DEFAULT_TF_VARS) $(ARGS)
 
 ###############################################################################
 # Targets

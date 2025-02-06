@@ -7,3 +7,13 @@ variable "local_ip" {
   description = "Local IP address for security group ingress"
   type        = string
 }
+
+variable "org" {
+  description = "Organization name"
+  type        = string
+}
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+}
