@@ -48,7 +48,7 @@ BACKEND_TF_VARS   := \
   --backend-config="encrypt=true"
 
 # Combine commonly used Terraform arguments into a single variable
-TF_COMMON_ARGS    := $(TF_VARS) $(DEFAULT_TF_VARS) $(ARGS)
+TF_COMMON_ARGS    := $(TF_VARS) $(ARGS)
 
 ###############################################################################
 # Targets
