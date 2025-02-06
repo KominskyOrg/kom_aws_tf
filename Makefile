@@ -33,7 +33,13 @@ else
   $(error Invalid TF_PROJ value "$(TF_PROJ)". Valid options: $(VALID_TF_PROJS))
 endif
 
-DEFAULT_TF_VARS   := -var="infra_env=$(INFRA_ENV)" -var="org=$(ORG)" -var="region=$(REGION)"
+DEFAULT_TF_VARS   := -var="org=$(ORG)" -var="region=$(REGION)"
+ifeq ($(TF_PROJ),main)
+  TF_VARS := $(DEFAULT_TF_VARS)
+else
+  TF_VARS := $(DEFAULT_TF_VARS) -var="infra_env=$(INFRA_ENV)"
+endif
+
 BACKEND_TF_VARS   := \
   --backend-config="bucket=$(TF_STATE_BUCKET)" \
   --backend-config="key=$(TF_STATE_KEY)" \
@@ -42,7 +48,7 @@ BACKEND_TF_VARS   := \
   --backend-config="encrypt=true"
 
 # Combine commonly used Terraform arguments into a single variable
-TF_COMMON_ARGS    := $(DEFAULT_TF_VARS) $(ARGS)
+TF_COMMON_ARGS := $(TF_VARS) $(ARGS)
 
 ###############################################################################
 # Targets

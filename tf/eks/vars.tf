@@ -1,19 +1,19 @@
-variable "infra_env" {
-  description = "Environment name (e.g., staging, prod)"
-  type        = string
-}
-
 variable "local_ip" {
   description = "Local IP address for security group ingress"
   type        = string
 }
 
+variable "infra_env" {
+  description = "Environment to deploy to"
+  type        = string
+}
+
 variable "org" {
-  description = "Organization name"
+  description = "Organization to deploy to"
   type        = string
 }
 
 variable "region" {
-  description = "AWS region"
+  description = "Region to deploy to"
   type        = string
 }
