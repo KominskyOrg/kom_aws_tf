@@ -24,7 +24,7 @@ ifneq ($(filter $(TF_PROJ),$(VALID_TF_PROJS)),)
 	TF_STATE_DYNAMODB_TABLE ?= tf-state-table
   else
 	TF_DIR                  := tf/$(TF_PROJ)
-	TF_STATE_KEY            := $(REPO_NAME)/$(TF_PROJ)/$(INFRA_ENV)/terraform_state.tfstate
+	TF_STATE_KEY            := $(REPO_NAME)/$(TF_PROJ)/terraform_state.tfstate
 	TF_STATE_BUCKET         ?= $(ORG)-$(INFRA_ENV)-tf-state
 	TF_STATE_REGION         ?= $(REGION)
 	TF_STATE_DYNAMODB_TABLE ?= tf-state-lock-$(INFRA_ENV)

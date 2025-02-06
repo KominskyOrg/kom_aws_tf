@@ -13,6 +13,7 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         tf_proj: [eks, rds, vpc, main]
 
