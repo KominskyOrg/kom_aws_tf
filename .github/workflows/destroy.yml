@@ -7,14 +7,19 @@ on:
         description: "Which environment to destroy? e.g., dev, staging, prod"
         required: true
         default: "staging"
+      tf_proj:
+        description: "Which Terraform project to destroy? e.g., eks, rds, vpc"
+        required: true
+        default: "eks"
+        type: "choice"
+        options:
+          - eks
+          - rds
+          - vpc
 
 jobs:
   destroy-resources:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Adjust to match valid TF_PROJ values in your Makefile
-        tf_proj: [eks, rds, vpc, main]
 
     steps:
       - name: Check out repository
