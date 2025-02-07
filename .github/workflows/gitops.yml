@@ -7,7 +7,7 @@ on:
     branches: [staging, main]
 
 env:
-  TF_VAR_local_ip: ${{ github.actor_ip }}
+  TF_VAR_local_ip: ${{ secrets.ACTOR_IP }}
 
 jobs:
   terraform:

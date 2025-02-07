@@ -17,6 +17,9 @@ on:
           - rds
           - vpc
 
+env:
+  TF_VAR_local_ip: ${{ secrets.ACTOR_IP }}
+
 jobs:
   destroy-resources:
     runs-on: ubuntu-latest
