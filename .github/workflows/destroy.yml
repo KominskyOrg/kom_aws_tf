@@ -32,5 +32,5 @@ jobs:
 
       - name: Initialize and Destroy
         run: |
-          make init TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=${{ github.event.inputs.environment }}
-          make destroy TF_PROJ=${{ matrix.tf_proj }} INFRA_ENV=${{ github.event.inputs.environment }}
+          make init TF_PROJ=${{ inputs.tf_proj }} INFRA_ENV=${{ inputs.environment }}
+          make destroy TF_PROJ=${{ inputs.tf_proj }} INFRA_ENV=${{ inputs.environment }}
